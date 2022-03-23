@@ -1,31 +1,31 @@
 .App {
-    text-align: center;
-    background-color: rgb(20, 56, 97);
-    color: #cccccc;
+  text-align: center;
+  background-color: rgb(20, 56, 97);
+  color: #cccccc;
 }
 
 .App-header {
-    background-color: #282c34;
-    min-height: 20vh;
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: flex-start;
+  background-color: #282c34;
+  min-height: 20vh;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-start;
 
-    color: white;
+  color: white;
 }
 
 .App-logo {
-    height: 6rem;
-    pointer-events: none;
+  height: 6rem;
+  pointer-events: none;
 }
 
 .App-title {
-    font-size: 3rem;
+  font-size: 3rem;
 }
 
 .App-link {
-    color: #61dafb;
+  color: #61dafb;
 }
 
 .coin-table {
@@ -35,10 +35,10 @@
 }
 
 @keyframes App-logo-spin {
-    from {
-        transform: rotate(0deg);
-    }
-    to {
-        transform: rotate(360deg);
-    }
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
 }

@@ -1,5 +1,6 @@
 import './App.css';
-import Coin from './components/Coin/Coin';
+import AccountBalance from './components/AccountBalance';
+import Coin from './components/Coin';
 import logo from './logo.svg';
 
 function App() {
@@ -9,6 +10,7 @@ function App() {
         <img src={logo} alt="React logo" className="App-logo" />
         <h1 className="App-title">Moralis React Dex</h1>
       </header>
+      <AccountBalance amount={10000} />
       <table className="coin-table">
         <thead>
           <tr>
