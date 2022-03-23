@@ -1,7 +1,7 @@
-import './App.css';
+import Header from './components/Header';
 import AccountBalance from './components/AccountBalance';
-import Coin from './components/Coin';
-import logo from './logo.svg';
+import CoinList from './components/CoinList';
+import styled from 'styled-components';
 
 const AppData = {
   balance: 10000,
@@ -13,30 +13,18 @@ const AppData = {
   ],
 };
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} alt="React logo" className="App-logo" />
-        <h1 className="App-title">Moralis React Dex</h1>
-      </header>
-      <AccountBalance amount={AppData.balance} />
-      <table className="coin-table">
-        <thead>
-          <tr>
-            <th>Name</th>
-            <th>Ticker</th>
-            <th>Price</th>
-          </tr>
-        </thead>
-        <tbody>
-          {AppData.coins.map(({ name, ticker, price }) => (
-            <Coin key={ticker} name={name} ticker={ticker} price={price} />
-          ))}
-        </tbody>
-      </table>
-    </div>
-  );
-}
+const Container = styled.div`
+  text-align: center;
+  background-color: rgb(20, 56, 97);
+  color: #cccccc;
+`;
+
+const App = () => (
+  <Container>
+    <Header />
+    <AccountBalance amount={AppData.balance} />
+    <CoinList cointData={AppData} />
+  </Container>
+);
 
 export default App;
