@@ -3,6 +3,16 @@ import AccountBalance from './components/AccountBalance';
 import Coin from './components/Coin';
 import logo from './logo.svg';
 
+const AppData = {
+  balance: 10000,
+  coins: [
+    { name: 'Bitcoin', ticker: 'BTC', price: 9999.99 },
+    { name: 'Ethereum', ticker: 'ETH', price: 299.99 },
+    { name: 'Tether', ticker: 'USDT', price: 1.0 },
+    { name: 'Ripple', ticker: 'XRP', price: 0.2 },
+  ],
+};
+
 function App() {
   return (
     <div className="App">
@@ -10,7 +20,7 @@ function App() {
         <img src={logo} alt="React logo" className="App-logo" />
         <h1 className="App-title">Moralis React Dex</h1>
       </header>
-      <AccountBalance amount={10000} />
+      <AccountBalance amount={AppData.balance} />
       <table className="coin-table">
         <thead>
           <tr>
@@ -20,10 +30,9 @@ function App() {
           </tr>
         </thead>
         <tbody>
-          <Coin name="Bitcoin" ticker="BTC" price={9999.99} />
-          <Coin name="Ethereum" ticker="ETH" price={299.99} />
-          <Coin name="Tether" ticker="USDT" price={1.0} />
-          <Coin name="Ripple" ticker="XRP" price={0.2} />
+          {AppData.coins.map(({ name, ticker, price }) => (
+            <Coin key={ticker} name={name} ticker={ticker} price={price} />
+          ))}
         </tbody>
       </table>
     </div>
