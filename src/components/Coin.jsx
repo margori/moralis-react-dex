@@ -30,6 +30,8 @@ Coin.propTypes = {
   name: PropTypes.string.isRequired,
   ticker: PropTypes.string.isRequired,
   price: PropTypes.number.isRequired,
+  balance: PropTypes.number.isRequired,
+  showBalances: PropTypes.bool,
 };
 
 export default Coin;
