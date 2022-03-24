@@ -8,18 +8,19 @@ const Table = styled.table`
   font-size: 1.4rem;
 `;
 
-const CoinList = ({ showBalances, cointData, handleRefresh }) => (
+const CoinList = ({ showBalances, coinData, handleRefresh }) => (
   <Table>
     <thead>
       <tr>
         <th>Name</th>
         <th>Ticker</th>
         <th>Price</th>
-        <th>Balance</th>
+        {showBalances && <th>Balance</th>}
+        <th>Actions</th>
       </tr>
     </thead>
     <tbody>
-      {cointData.coins.map((c) => (
+      {coinData.map((c) => (
         <Coin
           key={c.id}
           {...c}

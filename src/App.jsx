@@ -7,12 +7,6 @@ import axios from 'axios';
 
 const COIN_COUNT = 10;
 
-const AppData = {
-  balance: 10000,
-  showBalances: false,
-  coins: [],
-};
-
 const Container = styled.div`
   text-align: center;
   background-color: rgb(20, 56, 97);
@@ -20,7 +14,9 @@ const Container = styled.div`
 `;
 
 const App = () => {
-  const [currentAppData, setAppData] = useState(AppData);
+  const [balance, setBalance] = useState(10000);
+  const [showBalances, setShowBalances] = useState(false);
+  const [coins, setCoins] = useState([]);
 
   const handleRefresh = async (id) => {
     const response = await axios.get(
@@ -29,21 +25,15 @@ const App = () => {
     const coinPrice = response.data.quotes.USD.price;
     console.log(`New price ${coinPrice}`);
 
-    const newCoins = currentAppData.coins.map((c) => {
+    const newCoins = coins.map((c) => {
       const newPrice = c.id === id ? coinPrice : c.price;
       return { ...c, price: newPrice };
     });
-    setAppData({
-      ...currentAppData,
-      coins: newCoins,
-    });
+    setCoins(newCoins);
   };
 
   const toggleBalances = () => {
-    setAppData({
-      ...currentAppData,
-      showBalances: !currentAppData.showBalances,
-    });
+    setShowBalances(!showBalances);
   };
 
   const paprikaCoinToOurCoin = (coin) => ({
@@ -54,31 +44,32 @@ const App = () => {
     price: coin.quotes.USD.price,
   });
 
+  const initializeCoins = async () => {
+    console.log('Getting coins...');
+    const response = await axios.get('https://api.coinpaprika.com/v1/coins');
+    console.log('... coins gotten');
+
+    const coinIds = response.data
+      .filter((coin) => coin.rank > 0 && coin.rank <= COIN_COUNT)
+      .map((coin) => coin.id);
+
+    const promises = coinIds.map((id) =>
+      axios.get(`https://api.coinpaprika.com/v1/tickers/${id}`)
+    );
+    console.log('Getting prices...');
+    const responses = await Promise.all(promises);
+    console.log('... prices gotten');
+    const newCoins = responses.map((response) =>
+      paprikaCoinToOurCoin(response.data)
+    );
+
+    console.log(newCoins);
+    setCoins(newCoins);
+  };
+
   useEffect(async () => {
-    if (currentAppData.coins.length == 0) {
-      console.log('Getting coins...');
-      const response = await axios.get('https://api.coinpaprika.com/v1/coins');
-      console.log('... coins gotten');
-
-      const coinIds = response.data
-        .filter((coin) => coin.rank > 0 && coin.rank <= COIN_COUNT)
-        .map((coin) => coin.id);
-
-      const promises = coinIds.map((id) =>
-        axios.get(`https://api.coinpaprika.com/v1/tickers/${id}`)
-      );
-      console.log('Getting prices...');
-      const responses = await Promise.all(promises);
-      console.log('... prices gotten');
-      const newCoins = responses.map((response) =>
-        paprikaCoinToOurCoin(response.data)
-      );
-
-      console.log(newCoins);
-      setAppData({
-        ...currentAppData,
-        coins: newCoins,
-      });
+    if (coins.length == 0) {
+      initializeCoins();
     }
   });
 
@@ -86,15 +77,19 @@ const App = () => {
     <Container>
       <Header />
       <AccountBalance
-        amount={currentAppData.balance}
-        showBalances={currentAppData.showBalances}
+        amount={balance}
+        showBalances={showBalances}
         toggleBalances={toggleBalances}
       />
-      <CoinList
-        showBalances={currentAppData.showBalances}
-        cointData={currentAppData}
-        handleRefresh={handleRefresh}
-      />
+      {coins.length == 0 ? (
+        <p>Loading...</p>
+      ) : (
+        <CoinList
+          showBalances={showBalances}
+          coinData={coins}
+          handleRefresh={handleRefresh}
+        />
+      )}
     </Container>
   );
 };
