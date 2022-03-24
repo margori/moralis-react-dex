@@ -4,14 +4,22 @@ import styled from 'styled-components';
 
 const Cell = styled.td`
   border: 1px solid #cccccc;
-  width: 20vw;
+  width: 18vw;
 `;
 
-const Coin = ({ name, ticker, price, handleRefresh }) => (
+const Coin = ({
+  name,
+  ticker,
+  price,
+  balance,
+  showBalances,
+  handleRefresh,
+}) => (
   <tr>
     <Cell>{name}</Cell>
     <Cell>{ticker}</Cell>
     <Cell>{Math.round(price * 100) / 100} USD</Cell>
+    {showBalances && <Cell>{balance}</Cell>}
     <Cell>
       <button onClick={() => handleRefresh(ticker)}>Refresh</button>
     </Cell>

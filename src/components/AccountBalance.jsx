@@ -8,7 +8,14 @@ const Section = styled.section`
   padding: 1rem 0 1rem 5rem;
 `;
 
-const AccountBalance = ({ amount }) => <Section>Balance: {amount} USD</Section>;
+const AccountBalance = ({ amount, showBalances, toggleBalances }) => (
+  <Section>
+    <button onClick={() => toggleBalances()}>
+      {showBalances ? 'Hide' : 'Show'}
+    </button>
+    {showBalances && `Balance: ${amount} USD`}
+  </Section>
+);
 
 AccountBalance.propTypes = {
   amount: PropTypes.number.isRequired,
