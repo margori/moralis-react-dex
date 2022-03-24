@@ -7,26 +7,16 @@ const Cell = styled.td`
   width: 20vw;
 `;
 
-const Coin = ({ name, ticker, price }) => {
-  const [currentPrice, setCurrentPrice] = useState(price);
-
-  const handleClick = (e) => {
-    const randomPercentage = 0.995 + Math.random() * 0.01;
-    const newPrice = currentPrice * randomPercentage;
-    setCurrentPrice(newPrice);
-  };
-
-  return (
-    <tr>
-      <Cell>{name}</Cell>
-      <Cell>{ticker}</Cell>
-      <Cell>{Math.round(currentPrice * 100) / 100} USD</Cell>
-      <Cell>
-        <button onClick={handleClick}>Refresh</button>
-      </Cell>
-    </tr>
-  );
-};
+const Coin = ({ name, ticker, price, handleRefresh }) => (
+  <tr>
+    <Cell>{name}</Cell>
+    <Cell>{ticker}</Cell>
+    <Cell>{Math.round(price * 100) / 100} USD</Cell>
+    <Cell>
+      <button onClick={() => handleRefresh(ticker)}>Refresh</button>
+    </Cell>
+  </tr>
+);
 
 Coin.propTypes = {
   name: PropTypes.string.isRequired,

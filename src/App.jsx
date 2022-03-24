@@ -1,3 +1,4 @@
+import React, { useState } from 'react';
 import Header from './components/Header';
 import AccountBalance from './components/AccountBalance';
 import CoinList from './components/CoinList';
@@ -19,12 +20,31 @@ const Container = styled.div`
   color: #cccccc;
 `;
 
-const App = () => (
-  <Container>
-    <Header />
-    <AccountBalance amount={AppData.balance} />
-    <CoinList cointData={AppData} />
-  </Container>
-);
+const App = () => {
+  const [currentAppData, setAppData] = useState(AppData);
+
+  const handleRefresh = (ticker) => {
+    const newCoins = currentAppData.coins.map((c) => {
+      let newPrice = c.price;
+      if (c.ticker === ticker) {
+        const randomPercentage = 0.995 + Math.random() * 0.01;
+        newPrice = newPrice * randomPercentage;
+      }
+      return { ...c, price: newPrice };
+    });
+    setAppData({
+      ...currentAppData,
+      coins: newCoins,
+    });
+  };
+
+  return (
+    <Container>
+      <Header />
+      <AccountBalance amount={currentAppData.balance} />
+      <CoinList cointData={currentAppData} handleRefresh={handleRefresh} />
+    </Container>
+  );
+};
 
 export default App;
