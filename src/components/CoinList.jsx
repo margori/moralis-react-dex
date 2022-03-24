@@ -21,7 +21,7 @@ const CoinList = ({ showBalances, cointData, handleRefresh }) => (
     <tbody>
       {cointData.coins.map((c) => (
         <Coin
-          key={c.ticker}
+          key={c.id}
           {...c}
           showBalances={showBalances}
           handleRefresh={handleRefresh}

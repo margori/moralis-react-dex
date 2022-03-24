@@ -22,13 +22,15 @@ const Container = styled.div`
 const App = () => {
   const [currentAppData, setAppData] = useState(AppData);
 
-  const handleRefresh = (ticker) => {
+  const handleRefresh = async (id) => {
+    const response = await axios.get(
+      `https://api.coinpaprika.com/v1/tickers/${id}`
+    );
+    const coinPrice = response.data.quotes.USD.price;
+    console.log(`New price ${coinPrice}`);
+
     const newCoins = currentAppData.coins.map((c) => {
-      let newPrice = c.price;
-      if (c.ticker === ticker) {
-        const randomPercentage = 0.995 + Math.random() * 0.01;
-        newPrice = newPrice * randomPercentage;
-      }
+      const newPrice = c.id === id ? coinPrice : c.price;
       return { ...c, price: newPrice };
     });
     setAppData({
@@ -45,7 +47,7 @@ const App = () => {
   };
 
   const paprikaCoinToOurCoin = (coin) => ({
-    key: coin.id,
+    id: coin.id,
     name: coin.name,
     ticker: coin.symbol,
     balance: -1,
@@ -58,25 +60,24 @@ const App = () => {
       const response = await axios.get('https://api.coinpaprika.com/v1/coins');
       console.log('... coins gotten');
 
-      const filteredCoins = response.data.filter(
-        (coin) => coin.rank > 0 && coin.rank <= COIN_COUNT
-      );
+      const coinIds = response.data
+        .filter((coin) => coin.rank > 0 && coin.rank <= COIN_COUNT)
+        .map((coin) => coin.id);
 
-      const promises = filteredCoins.map((coin) =>
-        axios.get(`https://api.coinpaprika.com/v1/tickers/${coin.id}`)
+      const promises = coinIds.map((id) =>
+        axios.get(`https://api.coinpaprika.com/v1/tickers/${id}`)
       );
       console.log('Getting prices...');
-      Promise.all(promises).then((responses) => {
-        console.log('... prices gotten');
-        const newCoins = responses.map((response) =>
-          paprikaCoinToOurCoin(response.data)
-        );
+      const responses = await Promise.all(promises);
+      console.log('... prices gotten');
+      const newCoins = responses.map((response) =>
+        paprikaCoinToOurCoin(response.data)
+      );
 
-        console.log(newCoins);
-        setAppData({
-          ...currentAppData,
-          coins: newCoins,
-        });
+      console.log(newCoins);
+      setAppData({
+        ...currentAppData,
+        coins: newCoins,
       });
     }
   });

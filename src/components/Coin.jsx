@@ -8,6 +8,7 @@ const Cell = styled.td`
 `;
 
 const Coin = ({
+  id,
   name,
   ticker,
   price,
@@ -21,7 +22,7 @@ const Coin = ({
     <Cell>{Math.round(price * 100) / 100} USD</Cell>
     {showBalances && <Cell>{balance}</Cell>}
     <Cell>
-      <button onClick={() => handleRefresh(ticker)}>Refresh</button>
+      <button onClick={() => handleRefresh(id)}>Refresh</button>
     </Cell>
   </tr>
 );
