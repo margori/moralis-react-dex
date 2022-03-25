@@ -24,7 +24,7 @@ const Title = styled.h1`
 const Header = () => (
   <Container>
     <Logo src={logo} alt="React logo" />
-    <Title className="App-title">Moralis React Dex</Title>
+    <Title className="App-title">School React Exchange</Title>
   </Container>
 );
 

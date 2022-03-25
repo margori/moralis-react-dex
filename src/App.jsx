@@ -4,8 +4,14 @@ import AccountBalance from './components/AccountBalance';
 import CoinList from './components/CoinList';
 import styled from 'styled-components';
 import axios from 'axios';
+import 'bootswatch/dist/darkly/bootstrap.min.css';
 
+const INITIAL_BALANCE = 10000;
 const COIN_COUNT = 10;
+const Directions = {
+  BUY: +1,
+  SELL: -1,
+};
 
 const Container = styled.div`
   text-align: center;
@@ -14,7 +20,7 @@ const Container = styled.div`
 `;
 
 const App = () => {
-  const [balance, setBalance] = useState(10000);
+  const [balance, setBalance] = useState(INITIAL_BALANCE);
   const [showBalances, setShowBalances] = useState(false);
   const [coins, setCoins] = useState([]);
 
@@ -32,15 +38,45 @@ const App = () => {
     setCoins(newCoins);
   };
 
+  const doExchange = (coinId, coinAmont, direction) => {
+    let newBalance = balance;
+    const newCoins = coins.map((c) => {
+      let newCoinBalance = c.balance;
+      if (c.id === coinId) {
+        newCoinBalance += coinAmont * direction;
+        newBalance -= c.price * coinAmont * direction;
+      }
+
+      return { ...c, balance: newCoinBalance };
+    });
+    setCoins(newCoins);
+    setBalance(newBalance);
+  };
+
+  const handleBuy = (coinId, coinAmont) => {
+    console.log('buy', coinId, coinAmont);
+    doExchange(coinId, coinAmont, Directions.BUY);
+  };
+
+  const handleSell = (coinId, coinAmont) => {
+    console.log('sell', coinId, coinAmont);
+    doExchange(coinId, coinAmont, Directions.SELL);
+  };
+
   const toggleBalances = () => {
     setShowBalances(!showBalances);
+  };
+
+  const printMoney = () => {
+    const newBalance = balance + Math.random() * 5000 + 1000;
+    setBalance(newBalance);
   };
 
   const paprikaCoinToOurCoin = (coin) => ({
     id: coin.id,
     name: coin.name,
     ticker: coin.symbol,
-    balance: -1,
+    balance: 0,
     price: coin.quotes.USD.price,
   });
 
@@ -63,7 +99,6 @@ const App = () => {
       paprikaCoinToOurCoin(response.data)
     );
 
-    console.log(newCoins);
     setCoins(newCoins);
   };
 
@@ -78,8 +113,10 @@ const App = () => {
       <Header />
       <AccountBalance
         amount={balance}
+        coinData={coins}
         showBalances={showBalances}
         toggleBalances={toggleBalances}
+        printMoney={printMoney}
       />
       {coins.length == 0 ? (
         <p>Loading...</p>
@@ -88,6 +125,8 @@ const App = () => {
           showBalances={showBalances}
           coinData={coins}
           handleRefresh={handleRefresh}
+          handleBuy={handleBuy}
+          handleSell={handleSell}
         />
       )}
     </Container>
